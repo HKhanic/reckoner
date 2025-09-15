@@ -7,13 +7,27 @@ body {
 }
 
 #reckoner {
-    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    margin: auto;
-    flex: 0 1 auto;
-    width: fit-content;
     padding: 0.7%;
+    border: 1px solid #333;
+}
+
+#buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+}
+
+#buttons > div {
+    display: flex;
+    gap: 0.6vw;
+}
+
+#buttons button {
+    flex: 1 1 0px;
+    font-size: 6vmin;
+    padding: 0.5vmin 4vmin;
+    min-width: 0;
 }

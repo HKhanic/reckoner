@@ -9,6 +9,8 @@ function setDivideButtonWidth() {
 
     const loweredHeight = parseInt(computedMultiply.height, 10) * 0.7;
     backspaceImg.style.maxHeight = loweredHeight + "px";
+    backspaceImg.style.display = "block";
+    
 
     divideButton.style.maxWidth = computedMultiply.width;
 }

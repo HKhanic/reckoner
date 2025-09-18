@@ -6,6 +6,10 @@ body {
     height: 100vh;
 }
 
+#backspace-img {
+    vertical-align: middle;
+}
+
 #reckoner {
     display: flex;
     flex-direction: column;
@@ -40,11 +44,11 @@ body {
 #buttons > div {
     display: flex;
     gap: 0.5vmin;
+    width: 40vmin;
 }
 
 #buttons button {
     flex: 1 1 0px;
     font-size: 5vmin;
-    padding: 0.5vmin 4vmin;
     min-width: 0;
 }

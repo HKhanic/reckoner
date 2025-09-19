@@ -79,7 +79,7 @@ function input(e) {
         firstOperand = null;
         lastOperator = null;
         secondOperand = null;
-        updateDisplay(firstOperand);
+        updateDisplay("");
     }
     else if(inp.value == "B") {
         if(lastOperator === null) {
@@ -94,8 +94,19 @@ function input(e) {
             secondOperand = updateDisplay((-secondOperand).toString());
         }
     }
+    else if(inp.value == ".") {
+        if(firstOperand.includes(".") && (lastOperator === null || secondOperand === null)) {
 
-    console.log(inp.value)
+        } else if(!firstOperand.includes(".")) {
+            firstOperand = updateDisplay(firstOperand + ".");
+        }
+
+        if(secondOperand != null && secondOperand.includes(".") ) {
+
+        } else if(secondOperand !== null){
+            secondOperand = updateDisplay(secondOperand + ".");
+        }
+    }
 }
 
 function operation(operand1, operator, operand2) {
@@ -110,30 +121,44 @@ function operation(operand1, operator, operand2) {
 
     switch(operator){
         case "+":
-            return (+operand1 + +operand2).toString();
+            return (+((+operand1 + +operand2).toFixed(2))).toString();
         case "-":
-            return (+operand1 - +operand2).toString();
+            return (+((+operand1 - +operand2).toFixed(2))).toString();
         case "*":
-            return (+operand1 * +operand2).toString();
+            return (+((+operand1 * +operand2).toFixed(2))).toString();
         case "/":
             return (+((+operand1 / +operand2).toFixed(2))).toString();
     }
 }
 
 function updateDisplay(toDisplay) {
+
     if (toDisplay == null) { // covers both null and undefined
-        console.warn("updateDisplay called with null/undefined — ignored");
+        console.log("updateDisplay called with null/undefined — ignored");
         return; // bail out
     }
 
+     if (updateDisplay._busy) {
+    console.warn("updateDisplay re-entrant call ignored", toDisplay);
+    return;
+    }
+    updateDisplay._busy = true;
+
+    try {
     const display = document.querySelector("#display-text");
+    const str = String(toDisplay);
 
     let modified = null;
-    const n = Number(toDisplay);
+    const n = Number(str);
     if (!Number.isNaN(n) && n < 0) {
-        modified = toDisplay.slice(1) + toDisplay[0];
+      modified = str.slice(1) + str[0];
+    } else if (str.at(-1) === ".") {
+      modified = str.at(-1) + str.slice(0, -1);
     }
 
-    display.textContent = modified ?? toDisplay;
-    return toDisplay;
+    display.textContent = modified ?? str;
+    return str;
+    } finally {
+        updateDisplay._busy = false;
+    }
 }

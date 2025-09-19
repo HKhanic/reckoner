@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     display: flex;
@@ -32,7 +36,6 @@ body {
 
 #display span {
     flex: 1 1 0;
-    text-align: end;
     margin: 3%;
     font-size: 5vmin;
     min-width: 0;

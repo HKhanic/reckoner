@@ -36,9 +36,10 @@ function input(e) {
     if(!inp) return;
 
     const digit = /^[0-9]$/.test(+(inp.value));
+    const operator = /^[+\-/*]$/.test(inp.value);
 
-    if(inp == "=" && firstOperand != null && lastOperator != null && secondOperand != null) {
-        updateDisplay(operation(firstOperand, lastOperator, secondOperand));
+    if(inp.value == "=" && firstOperand != null && lastOperator != null && secondOperand != null) {
+        firstOperand = updateDisplay(operation(firstOperand, lastOperator, secondOperand));
     }
     else if(digit){
         if(firstOperand == null) {
@@ -65,28 +66,55 @@ function input(e) {
             updateDisplay(secondOperand);
         }
     }
+    else if(operator) {
+        if(firstOperand != null && lastOperator != null && secondOperand != null) {
+            firstOperand = updateDisplay(operation(firstOperand, lastOperator, secondOperand));
+            lastOperator = inp.value;
+        }
+        else {
+            lastOperator = inp.value;
+        }
+    }
+    else if(inp.value == "C") {
+        firstOperand = null;
+        lastOperator = null;
+        secondOperand = null;
+        updateDisplay(firstOperand);
+    }
+    else if(inp.value == "B") {
+        if(lastOperator === null) {
+            firstOperand = updateDisplay(firstOperand.slice(0, -1));
+        }
+    }
 
     console.log(inp.value)
 }
 
 function operation(operand1, operator, operand2) {
-    firstOperand = null;
     secondOperand = null;
-    lastOperator = null;
+    console.log(`${operand1} ${operator} ${operand2}`);
     switch(operator){
         case "+":
-            return +operand1 + +operand2;
+            return (+operand1 + +operand2).toString();
         case "-":
-            return +operand1 - +operand2;
+            return (+operand1 - +operand2).toString();
         case "*":
-            return +operand1 * +operand2;
-        case "%":
-            return +((+operand1 / +operand2).toFixed(2));
+            return (+operand1 * +operand2).toString();
+        case "/":
+            return (+((+operand1 / +operand2).toFixed(2))).toString();
     }
 }
 
 function updateDisplay(toDisplay) {
     const display = document.querySelector("#display-text");
 
-    display.textContent = toDisplay;
+    let modified = null;
+
+    if((+toDisplay) < 0) {
+        modified = toDisplay.slice(1) + toDisplay[0];
+    }
+
+    display.textContent = modified ?? toDisplay;
+
+    return toDisplay;
 }

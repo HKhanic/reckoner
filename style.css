@@ -27,6 +27,7 @@ body {
     border: 1px solid #333;
     display: flex;
     align-items: center;
+
 }
 
 #display span {
@@ -34,6 +35,9 @@ body {
     text-align: end;
     margin: 3%;
     font-size: 5vmin;
+    min-width: 0;
+    direction: rtl;
+    overflow: hidden;
 }
 
 #buttons {

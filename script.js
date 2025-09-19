@@ -86,6 +86,14 @@ function input(e) {
             firstOperand = updateDisplay(firstOperand.slice(0, -1));
         }
     }
+    else if(inp.value == "+-") {
+        if(lastOperator === null || secondOperand === null) {
+            firstOperand = updateDisplay((-firstOperand).toString());
+        }
+        else if(secondOperand != null) {
+            secondOperand = updateDisplay((-secondOperand).toString());
+        }
+    }
 
     console.log(inp.value)
 }

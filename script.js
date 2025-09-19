@@ -59,7 +59,7 @@ function input(e) {
             console.log("szar van a digit levesbe");
         }
 
-        if(lastOperator == null) {
+        if(lastOperator === null) {
             updateDisplay(firstOperand);
         }
         else {
@@ -100,7 +100,14 @@ function input(e) {
 
 function operation(operand1, operator, operand2) {
     secondOperand = null;
-    console.log(`${operand1} ${operator} ${operand2}`);
+
+    if(operator == "/" && operand2 == "0") {
+        firstOperand = null;
+        lastOperator = null;
+        updateDisplay("NO DIVIDES ET ZERO");
+        return;
+    }
+
     switch(operator){
         case "+":
             return (+operand1 + +operand2).toString();
@@ -114,15 +121,19 @@ function operation(operand1, operator, operand2) {
 }
 
 function updateDisplay(toDisplay) {
+    if (toDisplay == null) { // covers both null and undefined
+        console.warn("updateDisplay called with null/undefined — ignored");
+        return; // bail out
+    }
+
     const display = document.querySelector("#display-text");
 
     let modified = null;
-
-    if((+toDisplay) < 0) {
+    const n = Number(toDisplay);
+    if (!Number.isNaN(n) && n < 0) {
         modified = toDisplay.slice(1) + toDisplay[0];
     }
 
     display.textContent = modified ?? toDisplay;
-
     return toDisplay;
 }

@@ -1,5 +1,5 @@
-// #region setDivideButtonWidth()
-function setDivideButtonWidth() {
+// #region setSizes()
+function setSizes() {
     const divideButton = document.querySelector("#divide");
     const multiplyButton = document.querySelector("#multiply");
     const backspaceImg = document.querySelector("#backspace-img");
@@ -18,8 +18,8 @@ function setDivideButtonWidth() {
     display.style.maxWidth = computedButtons.width;
 }
 
-window.addEventListener("load", setDivideButtonWidth);
-window.addEventListener("resize", setDivideButtonWidth);
+window.addEventListener("load", setSizes);
+window.addEventListener("resize", setSizes);
 // #endregion
 
 let firstOperand = null;

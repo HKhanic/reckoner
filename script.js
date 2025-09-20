@@ -2,16 +2,14 @@
 function setSizes() {
     const divideButton = document.querySelector("#divide");
     const multiplyButton = document.querySelector("#multiply");
-    const backspaceImg = document.querySelector("#backspace-img");
     const display = document.querySelector("#display");
     const buttons = document.querySelector("#buttons");
+    //const images = document.querySelectorAll(".img");
 
     const computedMultiply = getComputedStyle(multiplyButton);
     const computedButtons = getComputedStyle(buttons);
 
     const loweredHeight = parseInt(computedMultiply.height, 10) * 0.7;
-    backspaceImg.style.maxHeight = loweredHeight + "px";
-    backspaceImg.style.display = "block";
     
     divideButton.style.maxWidth = computedMultiply.width;
 
@@ -22,9 +20,13 @@ window.addEventListener("load", setSizes);
 window.addEventListener("resize", setSizes);
 // #endregion
 
-let firstOperand = null;
-let lastOperator = null;
-let secondOperand = null;
+const calc = {
+    firstOperand: null,
+    operator: null,
+    secondOperand: null,
+}
+
+
 let display = null; 
 
 const reckoner = document.querySelector("#reckoner");
@@ -35,86 +37,107 @@ function input(e) {
     const inp = e.target.closest("button");
     if(!inp) return;
 
-    const digit = /^[0-9]$/.test(+(inp.value));
-    const operator = /^[+\-/*]$/.test(inp.value);
+    const value = inp.value;
 
-    if(inp.value == "=" && firstOperand != null && lastOperator != null && secondOperand != null) {
-        firstOperand = updateDisplay(operation(firstOperand, lastOperator, secondOperand));
+    if(/^[0-9]$/.test(value)) {
+        handleDigit(value);
+    } else if(/^[+\-/*]$/.test(value)) {
+        handleOperator(value);
+    } else {
+        switch(value) {
+            case "=":
+                handleEquals();
+                break;
+            case "C":
+                handleClear();
+                break;
+            case "B":
+                handleBackspace();
+                break;
+            case "+-":
+                handleSignToggle();
+                break;
+            case ".":
+                handleDecimal();
+                break;
+        }
     }
-    else if(digit){
-        if(firstOperand == null) {
-            firstOperand = inp.value;
-        }
-        else if(lastOperator == null) {
-            firstOperand += inp.value;
-        }
-        else if (lastOperator != null) {
-            if(secondOperand == null) {
-                secondOperand = inp.value;
-            } else {
-                secondOperand += inp.value;
-            }
-        }
-        else {
-            console.log("szar van a digit levesbe");
-        }
+    
+}
 
-        if(lastOperator === null) {
-            updateDisplay(firstOperand);
-        }
-        else {
-            updateDisplay(secondOperand);
-        }
-    }
-    else if(operator) {
-        if(firstOperand != null && lastOperator != null && secondOperand != null) {
-            firstOperand = updateDisplay(operation(firstOperand, lastOperator, secondOperand));
-            lastOperator = inp.value;
-        }
-        else {
-            lastOperator = inp.value;
-        }
-    }
-    else if(inp.value == "C") {
-        firstOperand = null;
-        lastOperator = null;
-        secondOperand = null;
-        updateDisplay("");
-    }
-    else if(inp.value == "B") {
-        if(lastOperator === null) {
-            firstOperand = updateDisplay(firstOperand.slice(0, -1));
-        }
-    }
-    else if(inp.value == "+-") {
-        if(lastOperator === null || secondOperand === null) {
-            firstOperand = updateDisplay((-firstOperand).toString());
-        }
-        else if(secondOperand != null) {
-            secondOperand = updateDisplay((-secondOperand).toString());
-        }
-    }
-    else if(inp.value == ".") {
-        if(firstOperand.includes(".") && (lastOperator === null || secondOperand === null)) {
+// #region calc functions
 
-        } else if(!firstOperand.includes(".")) {
-            firstOperand = updateDisplay(firstOperand + ".");
-        }
-
-        if(secondOperand != null && secondOperand.includes(".") ) {
-
-        } else if(secondOperand !== null){
-            secondOperand = updateDisplay(secondOperand + ".");
-        }
+function handleDigit(value) {
+    if (calc.operator === null) {
+        calc.firstOperand = (calc.firstOperand ?? "") + value;
+        updateDisplay(calc.firstOperand);
+    } else {
+        calc.secondOperand = (calc.secondOperand ?? "") + value;
+        updateDisplay(calc.secondOperand);
     }
 }
 
+function handleOperator(value) {
+    if (calc.firstOperand !== null && calc.operator !== null && calc.secondOperand !== null) {
+        calc.firstOperand = updateDisplay(operation(calc.firstOperand, calc.operator, calc.secondOperand));
+        calc.operator = value;
+    } else {
+        calc.operator = value;
+    }
+}
+
+function handleEquals() {
+    if(calc.firstOperand !== null && calc.operator !== null && calc.secondOperand !== null) {
+        calc.firstOperand = updateDisplay(operation(calc.firstOperand, calc.operator, calc.secondOperand));
+    }
+}
+
+function handleClear() {
+    calc.firstOperand = null;
+    calc.operator = null;
+    calc.secondOperand = null;
+    updateDisplay("");
+}
+
+function handleBackspace() {
+    if(calc.operator === null || calc.secondOperand === null) {
+        calc.firstOperand = updateDisplay(calc.firstOperand.slice(0, -1));
+    } else {
+        calc.secondOperand = updateDisplay(calc.secondOperand.slice(0, -1));
+    }
+}
+
+function handleSignToggle() {
+    if(calc.operator === null || calc.secondOperand === null) {
+        calc.firstOperand = updateDisplay((-calc.firstOperand).toString());
+    }
+    else if(calc.secondOperand != null) {
+        calc.secondOperand = updateDisplay((-calc.secondOperand).toString());
+    }
+}
+
+function handleDecimal() {
+    if(calc.firstOperand.includes(".") && (calc.operator === null || calc.secondOperand === null)) {
+
+    } else if(!calc.firstOperand.includes(".")) {
+        calc.firstOperand = updateDisplay(calc.firstOperand + ".");
+    }
+
+    if(calc.secondOperand != null && calc.secondOperand.includes(".") ) {
+
+    } else if(calc.secondOperand !== null){
+        calc.secondOperand = updateDisplay(calc.secondOperand + ".");
+    }
+}
+
+// #endregion
+
 function operation(operand1, operator, operand2) {
-    secondOperand = null;
+    calc.secondOperand = null;
+    calc.operator = null;
 
     if(operator == "/" && operand2 == "0") {
-        firstOperand = null;
-        lastOperator = null;
+        calc.firstOperand = null;
         updateDisplay("NO DIVIDES ET ZERO");
         return;
     }

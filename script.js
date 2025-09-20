@@ -42,7 +42,7 @@ function input(e) {
     if(/^[0-9]$/.test(value)) {
         handleDigit(value);
     } else if(/^[+\-/*]$/.test(value)) {
-        handleOperator(value);
+        handleOperator(e, value);
     } else {
         switch(value) {
             case "=":
@@ -77,13 +77,28 @@ function handleDigit(value) {
     }
 }
 
-function handleOperator(value) {
+function handleOperator(e, value) {
     if (calc.firstOperand !== null && calc.operator !== null && calc.secondOperand !== null) {
         calc.firstOperand = updateDisplay(operation(calc.firstOperand, calc.operator, calc.secondOperand));
         calc.operator = value;
+    } else if(calc.firstOperand === null){
+        return;
     } else {
         calc.operator = value;
     }
+    highlightActiveOperator();
+}
+
+function highlightActiveOperator() {
+    const operators = document.querySelectorAll(".operator");
+
+    operators.forEach( item => {
+        if(item.value === calc.operator) {
+            item.classList.add("highlight");
+        } else {
+            item.classList.remove("highlight");
+        }
+    });
 }
 
 function handleEquals() {
@@ -97,6 +112,7 @@ function handleClear() {
     calc.operator = null;
     calc.secondOperand = null;
     updateDisplay("");
+    highlightActiveOperator();
 }
 
 function handleBackspace() {
@@ -135,6 +151,7 @@ function handleDecimal() {
 function operation(operand1, operator, operand2) {
     calc.secondOperand = null;
     calc.operator = null;
+    highlightActiveOperator();
 
     if(operator == "/" && operand2 == "0") {
         calc.firstOperand = null;

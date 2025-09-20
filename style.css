@@ -6,6 +6,29 @@ html {
     background-color: black;
 }
 
+@media (max-width: 768px) {  /* adjust the breakpoint as needed */
+  body #reckoner {
+    width: 100%;
+    height: 100%;
+  }
+  body #display {
+    width: 100%;
+    height: 35%;
+  }
+  body #buttons {
+    width: 100%;
+    height: 100%;
+  }
+  body #buttons > div {
+    width: 100%;
+    height: 100%;
+  }
+  body #buttons button {
+    width: 100%;
+    height: 100%;
+  }
+}
+
 #buttons .operator {
     background-color: #F19000;
     color: black;

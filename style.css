@@ -28,7 +28,10 @@ html {
   body #buttons button {
     width: 100%;
     height: 100%;
-    font-size: xx-large;
+    font-size: 3em;
+  }
+  body .img {
+    max-height: 9vmin;
   }
 }
 

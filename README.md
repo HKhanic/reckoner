@@ -1,1 +1,1 @@
-https://hkhanic.github.io/reckoner/
+https://reckoner.hakan.hu
